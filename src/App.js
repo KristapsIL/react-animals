@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [zoo, setZoo] = useState([]);
+
+  useEffect(()=>{
+    async function getData(){
+      const response = await fetch("animals.json");
+      const animals = await response.json();
+      setZoo(animals);
+    }
+    getData();
+  },[])
+
+  const renderZoo = zoo.map((animal)=>{
+    return (<article>
+      <img src={animal["image"]} alt={animal["animal"]} />
+      <div className="info">
+        <h2>{animal["animal"]}</h2>
+        <p>{animal["description"]}</p>
+        <ul>
+          {animal["answers"].map((singler) =>
+            <li>{singler}</li>
+          )}
+        </ul>
+      </div>
+    </article>)
+  })
+
+  return <main>{renderZoo}</main>;
 }
 
 export default App;
+
